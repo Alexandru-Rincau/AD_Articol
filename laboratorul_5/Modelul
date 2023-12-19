@@ -1,0 +1,79 @@
+# Crearea unei diagrame liniare
+data <- read.csv("C:/Users/zigra/Desktop/Dataset4.csv")
+data2 <- read.csv("C:/Users/zigra/Desktop/Dataset5.csv")
+install.packages("caret")
+library(caret)
+
+data2$DEVELOP <- as.factor(data2$DEVELOP)
+
+levels(data2$DEVELOP)
+
+
+set.seed(123)
+
+data_train <- data2
+data_test <- data
+
+# Crează variabile noi în setul de date
+data2$GDP_modified <- data2$GDP/1000
+data2$COMP.CAPIT_modified <- data2$COMP.CAPIT/1000000000
+data2$NET.USERS_modified <- data2$NET.USERS/10
+data2$CEOP_modified <- data2$CEOP*10
+data2$HMHDII_modified <- data2$HMHDII*10
+data2$HDII_modified <- data2$HDII*10
+data2$IC_modified <- data2$IC*10
+data2$II_modified <- data2$II*10
+data2$ITIS_modified <- data2$ITIS*10
+data2$LMLDII_modified <- data2$LMLDII*10
+data2$LDII_modified <- data2$LDII*10
+data2$TELEC_modified <- data2$TELEC*10
+
+# Antrenează modelul folosind variabilele modificate
+model <- train(
+  DEVELOP ~ GDP_modified + TOP.COMP + COMP.CAPIT_modified + NET.USERS_modified + SERV.EXP + GOODS.EXP + CEOP_modified + HMHDII_modified + HDII_modified + IC_modified + II_modified + ITIS_modified + LMLDII_modified + LDII_modified + TELEC_modified,
+  data = data2,
+  method = "glm",
+  family = "binomial"
+)
+
+# Crează variabile noi în setul de date
+data_train$GDP_modified <- data_train$GDP/1000
+data_train$COMP.CAPIT_modified <- data_train$COMP.CAPIT/1000000000
+data_train$NET.USERS_modified <- data_train$NET.USERS/10
+data_train$CEOP_modified <- data_train$CEOP*10
+data_train$HMHDII_modified <- data_train$HMHDII*10
+data_train$HDII_modified <- data_train$HDII*10
+data_train$IC_modified <- data_train$IC*10
+data_train$II_modified <- data_train$II*10
+data_train$ITIS_modified <- data_train$ITIS*10
+data_train$LMLDII_modified <- data_train$LMLDII*10
+data_train$LDII_modified <- data_train$LDII*10
+data_train$TELEC_modified <- data_train$TELEC*10
+model <- train(
+  DEVELOP ~ GDP_modified + TOP.COMP + COMP.CAPIT_modified + NET.USERS_modified + SERV.EXP + GOODS.EXP + CEOP_modified + HMHDII_modified + HDII_modified + IC_modified + II_modified + ITIS_modified + LMLDII_modified + LDII_modified + TELEC_modified,
+  data = data_train,
+  family = "binomial"
+)
+
+# Crează variabile noi în setul de date
+data_test$GDP_modified <- data_test$GDP/1000
+data_test$COMP.CAPIT_modified <- data_test$COMP.CAPIT/1000000000
+data_test$NET.USERS_modified <- data_test$NET.USERS/10
+data_test$CEOP_modified <- data_test$CEOP*10
+data_test$HMHDII_modified <- data_test$HMHDII*10
+data_test$HDII_modified <- data_test$HDII*10
+data_test$IC_modified <- data_test$IC*10
+data_test$II_modified <- data_test$II*10
+data_test$ITIS_modified <- data_test$ITIS*10
+data_test$LMLDII_modified <- data_test$LMLDII*10
+data_test$LDII_modified <- data_test$LDII*10
+data_test$TELEC_modified <- data_test$TELEC*10
+
+predictions <- predict.train(model, newdata = data_test, type = "prob")
+
+
+# Adăugarea valorilor prezise la setul de testare
+data_test$Predictions <- predictions
+
+# Afișarea setului de testare cu valorile reale și prezise
+print(data_test[, c("DEVELOP", "Predictions")])
